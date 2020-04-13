@@ -19,48 +19,26 @@
         <tr v-for="(item) in products" :key="item.id">
           <td>{{ item.category }}</td>
           <td>{{ item.title }}</td>
-          <td class="text-right">{{ item.origin_price }}</td>
-          <td class="text-right">{{ item.price }}</td>
+          <td class="text-right">{{ item.origin_price | currency }}</td>
+          <td class="text-right">{{ item.price | currency  }}</td>
           <td>
-        <tr v-if="item.is_enabled" class="text-success">啟用</tr>
-        <tr v-else>未啟用</tr>
-        </td>
-        <td>
-          <div class="btn-group btn-group-sm" role="group">
-            <button type="button" class="btn btn-outline-primary"
-                  @click="openModal('modify', item)">編輯</button>
-            <button type="button" class="btn btn-outline-danger"
-                  @click="openModal('del', item)">刪除</button>
-          </div>
-        </td>
+            <tr v-if="item.is_enabled" class="text-success">啟用</tr>
+            <tr v-else>未啟用</tr>
+          </td>
+          <td>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-primary"
+                    @click="openModal('modify', item)">編輯</button>
+              <button type="button" class="btn btn-outline-danger"
+                    @click="openModal('del', item)">刪除</button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
-    <nav aria-label="Page navigation">
-      <ul class="pagination">
-        <li class="page-item"
-            :class="{'disabled': !pagination.has_pre}"
-            @click="getProducts(pagination.current_page - 1)">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item"
-            v-for="(page) in pagination.total_pages"
-            :key="page"
-            :class="{'active': page === pagination.current_page}"
-            @click="getProducts(page)">
-            <a class="page-link" href="#">{{page}}</a>
-        </li>
-        <li class="page-item"
-            :class="{'disabled': !pagination.has_next}"
-            @click="getProducts(pagination.current_page + 1)">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <pagination class="d-flex justify-content-center"
+                :sent-page="pagination"></pagination>
+    <input type="text" v-model="pagination.total_pages">
     <!-- productModal -->
     <div class="modal fade" id="productModal" tabindex="-1" role="dialog"
           aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -185,11 +163,14 @@
     </div>
   </div>
 </template>
-
 <script>
 import $ from 'jquery';
+import pagination from '../Pagination';
 
 export default {
+  components: {
+    pagination,
+  },
   data() {
     return {
       products: [],

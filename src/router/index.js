@@ -8,6 +8,8 @@ import 'bootstrap';
 import Login from '@/components/pages/Login';
 import Dashboard from '@/components/Dashboard';
 import Products from '@/components/pages/Products';
+import CustomerOrder from '@/components/pages/CustomerOrder';
+import Coupons from '@/components/pages/Coupons';
 
 // 啟用官方元件
 Vue.use(VueRouter);
@@ -34,13 +36,30 @@ export default new VueRouter({
       name: 'Dashboard',
       path: '/admin',
       component: Dashboard,
-      meta: { requiresAuth: true },
       children: [
         {
           name: 'Products',
           path: 'products',
           component: Products,
           meta: { requiresAuth: true },
+        },
+        {
+          name: 'Coupons',
+          path: 'Coupons',
+          component: Coupons,
+          meta: { requiresAuth: true },
+        },
+      ],
+    },
+    {
+      name: 'Dashboard',
+      path: '/',
+      component: Dashboard,
+      children: [
+        {
+          name: 'CustomerOrder',
+          path: 'customer_order',
+          component: CustomerOrder,
         },
       ],
     },

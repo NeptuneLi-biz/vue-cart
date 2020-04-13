@@ -50,9 +50,9 @@ export default {
     // message: 傳入參數
     // status: 樣式，預設值為 warning
     vm.$bus.$on('message:push', (message, status = 'warning') => {
+      // vm.updateMessage(message, status);
       vm.updateMessage(message, status);
     });
-    vm.$bus.$emit('message:push');
   },
 };
 </script>
