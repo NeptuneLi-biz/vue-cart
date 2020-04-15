@@ -9,7 +9,9 @@ import Login from '@/components/pages/Login';
 import Dashboard from '@/components/Dashboard';
 import Products from '@/components/pages/Products';
 import CustomerOrder from '@/components/pages/CustomerOrder';
+import CustomerCheckout from '@/components/pages/CustomerCheckout';
 import Coupons from '@/components/pages/Coupons';
+import Orders from '@/components/pages/Orders';
 
 // 啟用官方元件
 Vue.use(VueRouter);
@@ -49,6 +51,12 @@ export default new VueRouter({
           component: Coupons,
           meta: { requiresAuth: true },
         },
+        {
+          name: 'Orders',
+          path: 'Orders',
+          component: Orders,
+          meta: { requiresAuth: true },
+        },
       ],
     },
     {
@@ -60,6 +68,11 @@ export default new VueRouter({
           name: 'CustomerOrder',
           path: 'customer_order',
           component: CustomerOrder,
+        },
+        {
+          name: 'CustomerCheckout',
+          path: 'customer_checkout/:orderId',
+          component: CustomerCheckout,
         },
       ],
     },

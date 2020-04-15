@@ -37,8 +37,8 @@
       </tbody>
     </table>
     <pagination class="d-flex justify-content-center"
-                :sent-page="pagination"></pagination>
-    <input type="text" v-model="pagination.total_pages">
+                :sent-page="pagination"
+                @change-page="getProducts"></pagination>
     <!-- productModal -->
     <div class="modal fade" id="productModal" tabindex="-1" role="dialog"
           aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -77,7 +77,6 @@
                   <input type="text" class="form-control" id="title" placeholder="請輸入標題"
                         v-model="tempProduct.title">
                 </div>
-
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="category">分類</label>
@@ -90,7 +89,6 @@
                           v-model="tempProduct.unit">
                   </div>
                 </div>
-
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="origin_price">原價</label>
@@ -104,7 +102,6 @@
                   </div>
                 </div>
                 <hr>
-
                 <div class="form-group">
                   <label for="description">產品描述</label>
                   <textarea type="text" class="form-control"
@@ -233,7 +230,7 @@ export default {
       }
       this.$http[httpMethod](api, { data: vm.tempProduct }).then((response) => {
         if (response.data.success) {
-          vm.getProducts();
+          vm.getProducts(vm.pagination.current_page);
           // Update Success
           this.$bus.$emit('message:push', response.data.message, 'success');
         } else {

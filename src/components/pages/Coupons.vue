@@ -27,13 +27,19 @@
             <tr v-else>未啟用</tr>
           </td>
           <td>
-            <button type="button"
-                    class="btn btn-outline-primary"
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-primary"
                     @click="openModal('modify', item)">編輯</button>
+              <button type="button" class="btn btn-outline-danger"
+                    @click="openModal('del', item)">刪除</button>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
+    <pagination class="d-flex justify-content-center"
+                :sent-page="pagination"
+                @change-page="getCoupons"></pagination>
      <!-- couponModal -->
     <div class="modal fade" id="couponModal" tabindex="-1" role="dialog"
           aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -55,25 +61,21 @@
                   <input type="text" class="form-control" id="title" placeholder="請輸入標題"
                         v-model="tempCoupon.title">
                 </div>
-
                 <div class="form-group">
                   <label for="code">優惠卷代碼</label>
                   <input type="text" class="form-control" id="code" placeholder="請輸入優惠卷"
                         v-model="tempCoupon.code">
                 </div>
-
                 <div class="form-group">
                   <label for="due_date">到期日</label>
                   <input type="date" class="form-control" id="due_date" placeholder="請輸入到期日"
                         v-model="tempCoupon.date">
                 </div>
-
                 <div class="form-group">
                   <label for="percent">折扣百分比</label>
                   <input type="number" class="form-control" id="percent" placeholder="請輸入折扣百分比"
                         v-model="tempCoupon.percent">
                 </div>
-
                 <div class="form-group">
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="is_enabled"
@@ -98,19 +100,47 @@
         </div>
       </div>
     </div>
+    <!-- delModal -->
+    <div class="modal fade" id="delCouponModal" tabindex="-1" role="dialog"
+          aria-labelledby="delCouponModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content border-0">
+          <div class="modal-header bg-danger delCouponModalLabel-white">
+            <h5 class="modal-title" id="exampleModalLabel">
+              <span>刪除優惠卷</span>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            是否刪除 <strong class="text-danger">{{ tempCoupon.title }}</strong> 優惠卷(刪除後將無法恢復)。
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-danger" @click="updateCoupon">確認刪除</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import $ from 'jquery';
+import pagination from '../Pagination';
 
 export default {
+  components: {
+    pagination,
+  },
   data() {
     return {
       coupons: {},
       isLoading: false, // full page loading
       couponAction: '', // 要對 coupon 做 add新增/modify修改
       tempCoupon: {},
+      pagination: {},
     };
   },
   methods: {
@@ -121,14 +151,19 @@ export default {
       switch (action) {
         case 'add':
           vm.tempCoupon = {};
+          $('#couponModal').modal('show');
           break;
         case 'modify':
           vm.tempCoupon = Object.assign({}, item);
+          $('#couponModal').modal('show');
+          break;
+        case 'del':
+          vm.tempCoupon = Object.assign({}, item);
+          $('#delCouponModal').modal('show');
           break;
         default:
           vm.tempProduct = {};
       }
-      $('#couponModal').modal('show');
       vm.isLoading = false;
     },
     getCoupons(page = 1) {
@@ -137,6 +172,7 @@ export default {
       vm.isLoading = true;
       this.$http.get(api).then((response) => {
         vm.coupons = response.data.coupons;
+        vm.pagination = response.data.pagination;
         vm.isLoading = false;
       });
     },
@@ -151,9 +187,14 @@ export default {
         api += `/${vm.tempCoupon.id}`;
         httpMethod = 'put';
       }
+      // 刪除優惠卷
+      if (vm.couponAction === 'del') {
+        api += `/${vm.tempCoupon.id}`;
+        httpMethod = 'delete';
+      }
       this.$http[httpMethod](api, { data: vm.tempCoupon }).then((response) => {
         if (response.data.success) {
-          vm.getCoupons();
+          vm.getCoupons(vm.pagination.current_page);
           // Update Success
           this.$bus.$emit('message:push', response.data.message, 'success');
         } else {
@@ -162,6 +203,7 @@ export default {
         }
         vm.isLoading = false;
         $('#couponModal').modal('hide');
+        $('#delCouponModal').modal('hide');
       });
     },
   },

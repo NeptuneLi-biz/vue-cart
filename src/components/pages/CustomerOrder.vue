@@ -78,6 +78,7 @@
       </div>
     </div>
     <hr>
+    <!-- 購物車頁面 -->
     <div class="row d-flex justify-content-center my-5">
       <div class="col-6">
         <table class="table">
@@ -130,6 +131,57 @@
         </div>
       </div>
     </div>
+    <hr>
+    <!-- 訂單送出頁面 -->
+    <div class="my-5 row justify-content-center">
+      <ValidationObserver class="col-md-6" ref="form" v-slot="{ reset }">
+        <form @submit.prevent="createOrder" @reset.prevent="reset">
+          <div class="form-group">
+            <label for="useremail">Email</label>
+            <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
+              <input type="email" class="form-control" id="useremail"
+                    v-model="form.user.email" placeholder="請輸入 Email">
+              <span class="text-danger" v-if="errors[0]">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="form-group">
+            <label for="username">收件人姓名</label>
+            <ValidationProvider name="name" rules="required" v-slot="{ errors }">
+              <input type="text" class="form-control" id="username"
+                v-model="form.user.name"
+                placeholder="輸入姓名">
+              <span class="text-danger" v-if="errors[0]">姓名 {{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="form-group">
+            <label for="usertel">收件人電話</label>
+            <ValidationProvider name="tel" rules="required" v-slot="{ errors }">
+              <input type="text" class="form-control" id="usertel"
+                v-model="form.user.tel"
+                placeholder="請輸入電話">
+              <span class="text-danger" v-if="errors[0]">電話 {{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="form-group">
+            <label for="useraddress">收件人地址</label>
+            <ValidationProvider name="address" rules="required" v-slot="{ errors }">
+              <input type="text" class="form-control" id="useraddress"
+                v-model="form.user.address"
+                placeholder="請輸入地址">
+              <span class="text-danger" v-if="errors[0]">地址 {{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="form-group">
+            <label for="comment">留言</label>
+            <textarea name="" id="comment" class="form-control"
+                      cols="30" rows="10" v-model="form.message"></textarea>
+          </div>
+          <div class="text-right">
+            <button class="btn btn-danger">送出訂單</button>
+          </div>
+        </form>
+      </ValidationObserver>
+    </div>
   </div>
 </template>
 
@@ -147,6 +199,15 @@ export default {
       },
       cartData: {},
       coupon_code: '',
+      form: {
+        user: {
+          name: '',
+          email: '',
+          tel: '',
+          address: '',
+        },
+        message: '',
+      },
     };
   },
   methods: {
@@ -194,7 +255,6 @@ export default {
       const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/cart`;
       vm.isLoading = true;
       this.$http.get(url).then((response) => {
-        console.log(response);
         vm.cartData = response.data.data;
         vm.isLoading = false;
       });
@@ -228,6 +288,37 @@ export default {
           vm.$bus.$emit('message:push', response.data.message, 'danger');
         }
         vm.isLoading = false;
+      });
+    },
+    createOrder() {
+      const vm = this;
+      const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/order`;
+      const order = vm.form;
+      vm.isLoading = true;
+      this.$refs.form.validate().then((success) => {
+        if (success) {
+          this.$http.post(url, { data: order }).then((response) => {
+            if (response.data.success) {
+              // vm.$bus.$emit('message:push', response.data.message, 'success');
+              vm.$router.push(`/customer_checkout/${response.data.orderId}`);
+              vm.getCart();
+              order.user.name = '';
+              order.user.email = '';
+              order.user.tel = '';
+              order.user.address = '';
+              order.message = '';
+              this.$nextTick(() => {
+                this.$refs.form.reset();
+              });
+            } else {
+              vm.$bus.$emit('message:push', response.data.message, 'danger');
+            }
+            vm.isLoading = false;
+          });
+        } else {
+          vm.isLoading = false;
+          vm.$bus.$emit('message:push', '欄位填寫不完整', 'danger');
+        }
       });
     },
   },

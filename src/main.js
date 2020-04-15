@@ -9,12 +9,31 @@ import App from './App';
 import router from './router';
 import './bus';
 import currencyFilter from './filters/currency';
+import date from './filters/date';
+/* eslint-disable */
+import { 
+  ValidationProvider,
+  extend,
+  ValidationObserver,
+} from 'vee-validate';
+import { required, email } from 'vee-validate/dist/rules';
+import { localize } from 'vee-validate';
+import TW from 'vee-validate/dist/locale/zh_TW.json';
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 axios.defaults.withCredentials = true;
 Vue.component('Loading', Loading);
 Vue.filter('currency', currencyFilter);
+Vue.filter('date', date);
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component("ValidationObserver", ValidationObserver);
+extend('email', email);
+extend('required', {
+  ...required,
+  message: '必填欄位',
+});
+localize('zh_TW', TW);
 
 /* eslint-disable no-new */
 new Vue({
