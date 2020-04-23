@@ -14,6 +14,7 @@ import Orders from '@/components/pages/Orders';
 import Home from '@/components/pages/Home';
 import Shop from '@/components/pages/Shop';
 import ShopDashboard from '@/components/ShopDashboard';
+import ShopCart from '@/components/pages/ShopCart';
 
 // 啟用官方元件
 Vue.use(VueRouter);
@@ -81,6 +82,11 @@ export default new VueRouter({
           name: 'Shop',
           path: 'shop',
           component: Shop,
+        },
+        {
+          name: 'ShopCart',
+          path: 'shop_cart',
+          component: ShopCart,
         },
       ],
     },

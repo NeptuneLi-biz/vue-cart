@@ -49,7 +49,7 @@
       </nav>
       <router-view></router-view>
       <!-- 購物車的頁面 -->
-      <div class="row d-flex justify-content-center my-5">
+      <!-- <div class="row d-flex justify-content-center my-5">
         <div class="col-6">
         <table class="table">
           <thead>
@@ -100,7 +100,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </main>
     <shopSidebar :sent-categories="categories" @close-aside="openAside(false)"></shopSidebar>
     <div class="bg-color" @click="openAside(false)"></div>
