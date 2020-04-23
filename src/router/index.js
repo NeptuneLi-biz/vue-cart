@@ -79,6 +79,11 @@ export default new VueRouter({
       component: ShopDashboard,
       children: [
         {
+          name: 'Home',
+          path: 'home',
+          component: Home,
+        },
+        {
           name: 'Shop',
           path: 'shop',
           component: Shop,
@@ -90,10 +95,10 @@ export default new VueRouter({
         },
       ],
     },
-    {
-      name: 'Home',
-      path: '/home',
-      component: Home,
-    },
+    // {
+    //   name: 'Home',
+    //   path: '/home',
+    //   component: Home,
+    // },
   ],
 });

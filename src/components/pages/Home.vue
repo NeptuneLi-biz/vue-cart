@@ -1,67 +1,14 @@
 <template>
-  <div>
-    <main>
-      <nav class="navbar navbar-expand-lg navbar-dark text-white fixed-top">
-        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse"
-          data-target="#navbarNavDropdown"
-         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"> -->
-        <button class="navbar-toggler mobile-link" type="button" data-toggle="collapse"
-              @click="openAside(true)">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <router-link class="navbar-brand text-light d-flex" to="/home">
-          <img class="d-inline-block align-self-center"
-              src="./../../assets/images/logo.png"
-              width="50" height="50" alt="">
-          <div class="d-inline-block align-self-center ml-2">Neon Tattoo</div>
-        </router-link>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item"
-                v-for="(item) in categories" :key="item.title"
-                :class="{'dropdown': item.subcategories.length !== 0}">
-              <!-- NOTE: 之後是用 routerLink ,所以現在沒 preventDefault 沒關係-->
-              <a class="nav-link"
-                :class="{'dropdown-toggle': item.subcategories.length !== 0}"
-                href="#">
-                  {{ item.title }}
-              </a>
-              <div class="dropdown-menu"
-                  v-if="item.subcategories.length !== 0">
-                <a class="dropdown-item" href="#"
-                    v-for="(subItem, index) in item.subcategories"
-                    :key="index">
-                    {{ subItem }}
-                </a>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <!-- 購物車內的數量 (Button 內包含 icon, 數量 badge) -->
-        <div class="dropdown ml-auto">
-          <button class="btn btn-sm btn-cart">
-            <i class="fas fa-user-circle text-white"></i>
-          </button>
-          <button class="btn btn-sm btn-cart">
-            <i class="fa fa-shopping-cart text-white" aria-hidden="true"></i>
-            <span class="badge badge-pill badge-danger">9</span>
-          </button>
-        </div>
-      </nav>
-      <!-- 1 -->
-      <section>
-        <swiper class="swiper" :options="swiperOption">
-          <swiper-slide><img class="w-100" src="./../../assets/images/1.jpg" alt=""></swiper-slide>
-          <swiper-slide><img class="w-100" src="./../../assets/images/2.jpg" alt=""></swiper-slide>
-          <swiper-slide><img class="w-100" src="./../../assets/images/3.jpg" alt=""></swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
-          <div class="swiper-button-prev" slot="button-prev"></div>
-          <div class="swiper-button-next" slot="button-next"></div>
-        </swiper>
-      </section>
-    </main>
-    <shopSidebar :sent-categories="categories" @close-aside="openAside(false)"></shopSidebar>
-    <div class="bg-color" @click="openAside(false)"></div>
+  <div id="templateHome">
+    <swiper class="swiper" :options="swiperOption">
+      <swiper-slide><img class="w-100" src="./../../assets/images/1.jpg" alt=""></swiper-slide>
+      <swiper-slide><img class="w-100" src="./../../assets/images/2.jpg" alt=""></swiper-slide>
+      <swiper-slide><img class="w-100" src="./../../assets/images/3.jpg" alt=""></swiper-slide>
+      <div class="swiper-pagination" slot="pagination"></div>
+      <div class="swiper-button-prev" slot="button-prev"></div>
+      <div class="swiper-button-next" slot="button-next"></div>
+    </swiper>
+    <div class="test" style="height:400px; background-color: lightpink;"></div>
   </div>
 </template>
 
@@ -157,6 +104,11 @@ export default {
       }
     });
     this.getProducts();
+  },
+  mounted() {
+    // fix nav height
+    const navHeight = document.querySelector('.navbar').offsetHeight.toString();
+    document.querySelector('#templateHome').setAttribute('style', `margin-top: -${navHeight}px;`);
   },
 };
 </script>
