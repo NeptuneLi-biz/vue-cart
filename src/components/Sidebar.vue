@@ -45,7 +45,7 @@
         </h6>
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
-            <router-link class="nav-link" to="/customer_order">
+            <router-link class="nav-link" to="/demo/customer_order">
               <i class="fas fa-shopping-cart"></i>
               <span data-feather="file-text"></span>
               模擬訂單

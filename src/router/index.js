@@ -4,7 +4,6 @@ import VueRouter from 'vue-router';
 import 'bootstrap';
 
 // 自訂元件
-// import Home from '@/components/HelloWorld';
 import Login from '@/components/pages/Login';
 import Dashboard from '@/components/Dashboard';
 import Products from '@/components/pages/Products';
@@ -12,6 +11,9 @@ import CustomerOrder from '@/components/pages/CustomerOrder';
 import CustomerCheckout from '@/components/pages/CustomerCheckout';
 import Coupons from '@/components/pages/Coupons';
 import Orders from '@/components/pages/Orders';
+import Home from '@/components/pages/Home';
+import Shop from '@/components/pages/Shop';
+import ShopDashboard from '@/components/ShopDashboard';
 
 // 啟用官方元件
 Vue.use(VueRouter);
@@ -21,14 +23,8 @@ export default new VueRouter({
   routes: [
     {
       path: '*',
-      redirect: 'login',
+      redirect: 'home',
     },
-    // {
-    //   name: '首頁', // 元件呈現的名稱
-    //   path: '/', // 對應的虛擬路徑
-    //   component: Home, // 對應的元件
-    //   meta: { requiresAuth: true }, // 頁面需要驗證
-    // },
     {
       name: 'Login',
       path: '/login',
@@ -60,8 +56,8 @@ export default new VueRouter({
       ],
     },
     {
-      name: 'Dashboard',
-      path: '/',
+      name: 'Dashboard2',
+      path: '/demo',
       component: Dashboard,
       children: [
         {
@@ -75,6 +71,23 @@ export default new VueRouter({
           component: CustomerCheckout,
         },
       ],
+    },
+    {
+      name: 'ShopDashboard',
+      path: '/',
+      component: ShopDashboard,
+      children: [
+        {
+          name: 'Shop',
+          path: 'shop',
+          component: Shop,
+        },
+      ],
+    },
+    {
+      name: 'Home',
+      path: '/home',
+      component: Home,
     },
   ],
 });

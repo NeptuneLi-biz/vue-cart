@@ -19,6 +19,8 @@ import {
 import { required, email } from 'vee-validate/dist/rules';
 import { localize } from 'vee-validate';
 import TW from 'vee-validate/dist/locale/zh_TW.json';
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
@@ -34,6 +36,8 @@ extend('required', {
   message: '必填欄位',
 });
 localize('zh_TW', TW);
+Vue.component('swiper', swiper);
+Vue.component("swiperSlide", swiperSlide);
 
 /* eslint-disable no-new */
 new Vue({

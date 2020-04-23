@@ -137,9 +137,9 @@
       <ValidationObserver class="col-md-6" ref="form" v-slot="{ reset }">
         <form @submit.prevent="createOrder" @reset.prevent="reset">
           <div class="form-group">
-            <label for="useremail">Email</label>
+            <label for="userEmail">Email</label>
             <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
-              <input type="email" class="form-control" id="useremail"
+              <input type="email" class="form-control" id="userEmail"
                     v-model="form.user.email" placeholder="請輸入 Email">
               <span class="text-danger" v-if="errors[0]">{{ errors[0] }}</span>
             </ValidationProvider>
@@ -154,18 +154,18 @@
             </ValidationProvider>
           </div>
           <div class="form-group">
-            <label for="usertel">收件人電話</label>
+            <label for="userTel">收件人電話</label>
             <ValidationProvider name="tel" rules="required" v-slot="{ errors }">
-              <input type="text" class="form-control" id="usertel"
+              <input type="text" class="form-control" id="userTel"
                 v-model="form.user.tel"
                 placeholder="請輸入電話">
               <span class="text-danger" v-if="errors[0]">電話 {{ errors[0] }}</span>
             </ValidationProvider>
           </div>
           <div class="form-group">
-            <label for="useraddress">收件人地址</label>
+            <label for="userAddress">收件人地址</label>
             <ValidationProvider name="address" rules="required" v-slot="{ errors }">
-              <input type="text" class="form-control" id="useraddress"
+              <input type="text" class="form-control" id="userAddress"
                 v-model="form.user.address"
                 placeholder="請輸入地址">
               <span class="text-danger" v-if="errors[0]">地址 {{ errors[0] }}</span>
