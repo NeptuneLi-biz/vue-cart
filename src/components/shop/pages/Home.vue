@@ -71,7 +71,7 @@ export default {
   methods: {
     getBanner(i) {
       // eslint-disable-next-line
-      return require(`../../assets/images/banner/${i}.jpg`);
+      return require(`../../../assets/images/banner/${i}.jpg`);
     },
   },
   created() {

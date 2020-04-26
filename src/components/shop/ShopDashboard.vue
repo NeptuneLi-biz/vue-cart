@@ -10,7 +10,7 @@
         </button>
         <router-link class="navbar-brand text-light d-flex" to="/home">
           <img class="d-inline-block align-self-center"
-              src="./../assets/images/logo.png"
+              src="./../../assets/images/logo.png"
               width="50" height="50" alt="">
           <div class="d-inline-block align-self-center ml-2">Neon Tattoo</div>
         </router-link>

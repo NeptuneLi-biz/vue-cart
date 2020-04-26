@@ -8,11 +8,11 @@
     <table class="table">
       <thead>
         <tr>
-          <th witdh="40%">名稱</th>
+          <th>名稱</th>
           <th width="20%">折扣百分比</th>
           <th width="20%">到期日</th>
           <th width="10%">是否啟用</th>
-          <th width="10%">編輯</th>
+          <th width="20%">編輯</th>
         </tr>
       </thead>
       <tbody>
@@ -128,7 +128,7 @@
 
 <script>
 import $ from 'jquery';
-import pagination from '../Pagination';
+import pagination from '../../Pagination';
 
 export default {
   components: {

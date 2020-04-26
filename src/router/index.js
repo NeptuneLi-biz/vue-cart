@@ -4,17 +4,17 @@ import VueRouter from 'vue-router';
 import 'bootstrap';
 
 // 自訂元件
-import Login from '@/components/pages/Login';
-import Dashboard from '@/components/Dashboard';
-import Products from '@/components/pages/Products';
-import CustomerOrder from '@/components/pages/CustomerOrder';
-import CustomerCheckout from '@/components/pages/CustomerCheckout';
-import Coupons from '@/components/pages/Coupons';
-import Orders from '@/components/pages/Orders';
-import Home from '@/components/pages/Home';
-import Shop from '@/components/pages/Shop';
-import ShopDashboard from '@/components/ShopDashboard';
-import ShopCart from '@/components/pages/ShopCart';
+import Login from '@/components/admin/pages/Login';
+import Dashboard from '@/components/admin/Dashboard';
+import Products from '@/components/admin/pages/Products';
+import CustomerOrder from '@/components/admin/pages/CustomerOrder';
+import CustomerCheckout from '@/components/admin/pages/CustomerCheckout';
+import Coupons from '@/components/admin/pages/Coupons';
+import Orders from '@/components/admin/pages/Orders';
+import Home from '@/components/shop/pages/Home';
+import Shop from '@/components/shop/pages/Shop';
+import ShopDashboard from '@/components/shop/ShopDashboard';
+import ShopCart from '@/components/shop/pages/ShopCart';
 
 // 啟用官方元件
 Vue.use(VueRouter);
