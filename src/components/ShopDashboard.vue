@@ -2,7 +2,7 @@
   <div>
     <main>
       <nav class="navbar navbar-expand-lg navbar-dark text-white sticky-top"
-          :class="{'bg-primary': !isHome}"
+          :class="{'bg-primary': !sentProps.isHome}"
           style="transform: translateZ(0);">
         <button class="navbar-toggler mobile-link" type="button" data-toggle="collapse"
               @click="openAside(true)">
@@ -19,12 +19,11 @@
             <li class="nav-item"
                 v-for="(item) in categories" :key="item.title"
                 :class="{'dropdown': item.subcategories.length !== 0}">
-              <!-- NOTE: 之後是用 routerLink ,所以現在沒 preventDefault 沒關係-->
-              <a class="nav-link"
-                :class="{'dropdown-toggle': item.subcategories.length !== 0}"
-                href="#">
-                  {{ item.title }}
-              </a>
+              <router-link class="nav-link"
+                          :class="{'dropdown-toggle': item.subcategories.length !== 0}"
+                          :to="item.link">
+                {{ item.title }}
+              </router-link>
               <div class="dropdown-menu"
                   v-if="item.subcategories.length !== 0">
                 <a class="dropdown-item" href="#"
@@ -36,71 +35,52 @@
             </li>
           </ul>
         </div>
-        <!-- 購物車內的數量 (Button 內包含 icon, 數量 badge) -->
-        <div class="dropdown ml-auto">
+        <section class="ml-auto">
           <button class="btn btn-sm btn-cart">
             <i class="fas fa-user-circle text-white"></i>
           </button>
-          <button class="btn btn-sm btn-cart">
+          <div class="dropdown d-inline-block">
+            <button class="btn btn-sm btn-cart dropdown" dataToggle="dropdown">
             <i class="fa fa-shopping-cart text-white" aria-hidden="true"></i>
-            <span class="badge badge-pill badge-danger">9</span>
+            <span class="badge badge-pill badge-danger"
+                  v-if="sentProps.cartData.carts">
+              {{ sentProps.cartData.carts.length }}
+            </span>
           </button>
-        </div>
-      </nav>
-      <router-view></router-view>
-      <!-- 購物車的頁面 -->
-      <!-- <div class="row d-flex justify-content-center my-5">
-        <div class="col-6">
-        <table class="table">
-          <thead>
-            <tr>
-              <th width="100"></th>
-              <th>品名</th>
-              <th width="80">數量</th>
-              <th width="150" class="text-right">單價</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item) in cartData.carts" :key="item.id">
-              <td class="align-middle">
-                <button type="button" class="btn btn-outline-danger"
-                        @click="removeCartItem(item.id)">
-                  <i class="far fa-trash-alt"></i>
-                </button>
-              </td>
-              <td class="align-middle">
-                {{ item.product.title }}
-                <div class="text-success" v-if="item.coupon">
-                  已套用 <strong>{{ item.coupon.title }}</strong>
-                </div>
-              </td>
-              <td class="align-middle">{{ item.qty }} / {{ item.product.unit }}</td>
-              <td class="align-middle text-right">{{ item.total | currency  }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr class="text-right h5">
-              <td colspan=3 class="">總價</td>
-              <td>{{ cartData.total | currency }}</td>
-            </tr>
-            <tr class="text-right h5" v-if="cartData.total !== cartData.final_total">
-              <td colspan=3 class="text-success">折扣價</td>
-              <td>{{ cartData.final_total | currency }}</td>
-            </tr>
-          </tfoot>
-        </table>
-        <div class="input-group mb-3 input-group-sm">
-          <input type="text" class="form-control" placeholder="請輸入優惠碼"
-                v-model="coupon_code">
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button"
-                      @click="addCouponCode">
-                套用優惠碼
-              </button>
+          <div class="dropdown-menu py-3 px-1 text-center dropdown-menu-right"
+          style="width: 400px;">
+            <h6>已選擇商品</h6>
+            <table class="table mb-2">
+              <thead>
+                <tr>
+                  <th width=10%>刪除</th>
+                  <th>名稱</th>
+                  <th width=20%>數量</th>
+                  <th width=20%>金額</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- TODO: 要有高度限制 -->
+                  <tr v-for="item in sentProps.cartData.carts" :key="item.id">
+                      <td class="align-middle text-center">
+                          <button class="btn text-secondary" @click="removeCartItem(item.id)">
+                              <i class="fas fa-trash-alt"></i>
+                          </button>
+                      </td>
+                      <td class="align-middle">{{ item.product.title }}</td>
+                      <td class="align-middle">{{ item.qty }} {{ item.product.unit }}</td>
+                      <td class="align-middle text-right">{{ item.final_total | currency }}</td>
+                  </tr>
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-around">
+              <router-link class="btn btn-primary btn-sm" to="/shop_cart">結帳去</router-link>
             </div>
           </div>
-        </div>
-      </div> -->
+          </div>
+        </section>
+      </nav>
+      <router-view :sent-props="sentProps" @sent-carts="getCart()"></router-view>
     </main>
     <shopSidebar :sent-categories="categories" @close-aside="openAside(false)"></shopSidebar>
     <div class="bg-color" @click="openAside(false)"></div>
@@ -130,23 +110,28 @@ export default {
   },
   data() {
     return {
-      isHome: false,
+      sentProps: {
+        isHome: true,
+        cartData: {},
+      },
       categories: [
         {
           title: '商品分類',
           subcategories: [],
+          link: '/',
         },
         {
           title: '全部商品',
           subcategories: [],
+          link: '/shop',
         },
         {
           title: '精選推薦',
           subcategories: [],
+          link: '/',
         },
       ],
       products: {},
-      cartData: {},
       coupon_code: '',
       swiperOption: {
         autoplay: {
@@ -180,7 +165,7 @@ export default {
     },
     getProducts() {
       const vm = this;
-      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/products`;
+      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/products`;
       this.$http.get(api).then((response) => {
         vm.products = response.data.products;
         vm.products.forEach((item) => {
@@ -196,7 +181,7 @@ export default {
       const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/cart`;
       vm.isLoading = true;
       this.$http.get(url).then((response) => {
-        vm.cartData = response.data.data;
+        vm.sentProps.cartData = response.data.data;
         vm.isLoading = false;
       });
     },
@@ -264,16 +249,20 @@ export default {
     },
   },
   created() {
-    if (this.isHome) {
-      $(window).scroll(() => {
+    this.getProducts();
+    this.getCart();
+    const vm = this;
+    $(window).scroll(() => {
+      if (vm.sentProps.isHome) {
         if (window.scrollY > 100) {
           $('.navbar').addClass('bg-primary');
         } else {
           $('.navbar').removeClass('bg-primary');
         }
-      });
-    }
-    this.getProducts();
+      }
+    });
+  },
+  updated() {
   },
 };
 </script>

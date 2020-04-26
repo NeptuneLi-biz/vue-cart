@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <loading :active.sync="isLoading"></loading>
     <div class="row mt-4">
       <div class="col-md-4 mb-4" v-for="(item) in products" :key="item.key">
@@ -66,7 +66,14 @@
           </div>
           <div class="modal-footer">
             <div class="text-muted text-nowrap mr-3">
-              小計 <strong>{{ product.num * product.price }}</strong> 元
+              小計
+              <strong v-if="!product.price">
+                {{ product.num * product.origin_price | currency}}
+              </strong>
+              <strong v-else>
+                {{ product.num * product.price | currency}}
+              </strong>
+              元
             </div>
             <button type="button" class="btn btn-primary"
               @click="addToCart(product.id, product.num)">
@@ -84,6 +91,11 @@
 import $ from 'jquery';
 
 export default {
+  props: {
+    sentProps: {
+      type: Object,
+    },
+  },
   data() {
     return {
       products: [],
@@ -127,6 +139,7 @@ export default {
       });
     },
     addToCart(id, qty = 1) {
+      // TODO: 要將值傳給 ShopDashboard
       const vm = this;
       const item = {
         product_id: id,
@@ -138,88 +151,17 @@ export default {
         vm.status.loadingItem = '';
         if (response.data.success) {
           vm.$bus.$emit('message:push', response.data.message, 'success');
-          vm.getCart();
+          vm.$emit('sent-carts');
         } else {
           vm.$bus.$emit('message:push', response.data.message, 'danger');
         }
         $('#productModal').modal('hide');
       });
     },
-    getCart() {
-      const vm = this;
-      const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/cart`;
-      vm.isLoading = true;
-      this.$http.get(url).then((response) => {
-        vm.cartData = response.data.data;
-        vm.isLoading = false;
-      });
-    },
-    removeCartItem(id) {
-      const vm = this;
-      const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/cart/${id}`;
-      vm.isLoading = true;
-      this.$http.delete(url).then((response) => {
-        if (response.data.success) {
-          vm.$bus.$emit('message:push', response.data.message, 'success');
-          vm.getCart();
-        } else {
-          vm.$bus.$emit('message:push', response.data.message, 'danger');
-        }
-        vm.isLoading = false;
-      });
-    },
-    addCouponCode() {
-      const vm = this;
-      const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/coupon`;
-      const coupon = {
-        code: vm.coupon_code,
-      };
-      vm.isLoading = true;
-      this.$http.post(url, { data: coupon }).then((response) => {
-        if (response.data.success) {
-          vm.$bus.$emit('message:push', response.data.message, 'success');
-          vm.getCart();
-        } else {
-          vm.$bus.$emit('message:push', response.data.message, 'danger');
-        }
-        vm.isLoading = false;
-      });
-    },
-    createOrder() {
-      const vm = this;
-      const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/order`;
-      const order = vm.form;
-      vm.isLoading = true;
-      this.$refs.form.validate().then((success) => {
-        if (success) {
-          this.$http.post(url, { data: order }).then((response) => {
-            if (response.data.success) {
-              // vm.$bus.$emit('message:push', response.data.message, 'success');
-              vm.$router.push(`/customer_checkout/${response.data.orderId}`);
-              vm.getCart();
-              order.user.name = '';
-              order.user.email = '';
-              order.user.tel = '';
-              order.user.address = '';
-              order.message = '';
-              this.$nextTick(() => {
-                this.$refs.form.reset();
-              });
-            } else {
-              vm.$bus.$emit('message:push', response.data.message, 'danger');
-            }
-            vm.isLoading = false;
-          });
-        } else {
-          vm.isLoading = false;
-          vm.$bus.$emit('message:push', '欄位填寫不完整', 'danger');
-        }
-      });
-    },
   },
   created() {
     this.getProducts();
-    this.getCart();
+    this.sentProps.isHome = false;
   },
 };
 </script>
