@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Alert></Alert>
+    <Alert :sent-props="sentProps"></Alert>
     <Navbar></Navbar>
     <div class="container-fluid">
       <div class="row">
@@ -23,6 +23,17 @@ export default {
     Navbar,
     Sidebar,
     Alert,
+  },
+  data() {
+    return {
+      sentProps: {
+        navHeight: 50,
+      },
+    };
+  },
+  mounted() {
+    const vm = this;
+    vm.sentProps.navHeight = document.querySelector('.navbar').offsetHeight;
   },
 };
 </script>

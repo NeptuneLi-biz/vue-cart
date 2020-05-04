@@ -1,9 +1,13 @@
 <template>
   <div>
-    <section class="text-center">
+    <Alert :sent-props="sentProps"></Alert>
+    <div class="wrap text-center mt-5">
       <form class="form-signin"
             @submit.prevent="signIn">
-        <h1 class="h3 mb-3 font-weight-normal">請登入</h1>
+        <img class="d-inline-block align-self-center"
+            src="./../../assets/images/logo.png"
+            width="100" height="100" alt="">
+        <h1 class="h3 mb-3 font-weight-normal">Neon Tattoo 後台管理</h1>
         <label for="inputEmail"
                class="sr-only">Email address</label>
         <input type="email"
@@ -29,57 +33,24 @@
         </div>
         <button class="btn btn-lg btn-primary btn-block"
                 type="submit">Sign in</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>
+        <p class="mt-5 mb-3 text-muted">
+          Copyright © {{ author.year }} {{ author.name }}.All rights reserved.
+        </p>
       </form>
-    </section>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HelloWorld',
-  data() {
-    return {
-      user: {
-        username: '',
-        password: '',
-      },
-    };
-  },
-  methods: {
-    signIn() {
-      const api = `${process.env.API_PATH}/admin/signin`;
-      const vm = this;
-      this.$http.post(api, vm.user).then((response) => {
-        // eslint-disable-next-line
-        console.log(response.data);
-        if (response.data.success) {
-          vm.$router.push('/admin/products');
-        }
-      });
-    },
-  },
-};
-</script>
 <style scoped>
-html,
-section {
+.wrap {
   height: 100%;
-}
-
-section {
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-align: center;
   align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  /* background-color: #f5f5f5; */
+  padding: 40px 0;
 }
-
 .form-signin {
   width: 100%;
-  max-width: 330px;
+  max-width: 400px;
   padding: 15px;
   margin: auto;
 }
@@ -107,3 +78,46 @@ section {
   border-top-right-radius: 0;
 }
 </style>
+
+<script>
+import Alert from '../AlertMessage';
+
+export default {
+  components: {
+    Alert,
+  },
+  name: 'Login',
+  data() {
+    return {
+      user: {
+        username: '',
+        password: '',
+      },
+      sentProps: {
+        navHeight: 0,
+      },
+      author: {
+        name: 'NeptuneLi',
+        year: new Date().getFullYear(),
+      },
+    };
+  },
+  methods: {
+    signIn() {
+      const api = `${process.env.API_PATH}/admin/signin`;
+      const vm = this;
+      this.$http.post(api, vm.user).then((response) => {
+        if (response.data.success) {
+          vm.$router.push('/admin/products');
+          vm.$bus.$emit('message:push', response.data.message, 'success');
+        } else {
+          vm.$bus.$emit('message:push', response.data.message, 'danger');
+        }
+      });
+    },
+  },
+  mounted() {
+    document.body.setAttribute('style', 'background-color: #f5f5f5;');
+  },
+};
+</script>

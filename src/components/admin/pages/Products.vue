@@ -7,11 +7,11 @@
     <table class="table">
       <thead>
         <tr>
-          <th width="100">分類</th>
+          <th width="200">分類</th>
           <th>產品名稱</th>
-          <th width="80">原價</th>
-          <th width="80">售價</th>
-          <th width="100">是否啟用</th>
+          <th width="80" class="text-right">原價</th>
+          <th width="80" class="text-right">售價</th>
+          <th width="100" class="text-center">是否啟用</th>
           <th width="160">編輯</th>
         </tr>
       </thead>
@@ -20,10 +20,13 @@
           <td>{{ item.category }}</td>
           <td>{{ item.title }}</td>
           <td class="text-right">{{ item.origin_price | currency }}</td>
-          <td class="text-right">{{ item.price | currency  }}</td>
-          <td>
-            <tr v-if="item.is_enabled" class="text-success">啟用</tr>
-            <tr v-else>未啟用</tr>
+          <td class="text-right">
+            <span v-if="item.price">{{ item.price | currency }}</span>
+            <span v-else></span>
+          </td>
+          <td class="text-center">
+            <span v-if="item.is_enabled" class="text-success">啟用</span>
+            <span v-else>未啟用</span>
           </td>
           <td>
             <div class="btn-group btn-group-sm" role="group">
