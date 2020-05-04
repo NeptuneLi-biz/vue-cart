@@ -11,8 +11,23 @@
   </div>
 </template>
 
+<style scope>
+.message-alert {
+  position: fixed;
+  max-width: 50%;
+  top: 0px;
+  right: 20px;
+  z-index: 1100;
+}
+</style>
+
 <script>
 export default {
+  props: {
+    sentProps: {
+      type: Object,
+    },
+  },
   name: 'Navbar',
   data() {
     return {
@@ -45,24 +60,16 @@ export default {
   },
   created() {
     const vm = this;
-
-    // 自定義名稱 'messsage:push'
+    // 自定義名稱 'message:push'
     // message: 傳入參數
     // status: 樣式，預設值為 warning
     vm.$bus.$on('message:push', (message, status = 'warning') => {
-      // vm.updateMessage(message, status);
       vm.updateMessage(message, status);
     });
   },
+  mounted() {
+    const vm = this;
+    document.querySelector('.message-alert').setAttribute('style', `top: ${vm.sentProps.navHeight}px;`);
+  },
 };
 </script>
-
-<style scope>
-.message-alert {
-  position: fixed;
-  max-width: 50%;
-  top: 56px;
-  right: 20px;
-  z-index: 1100;
-}
-</style>

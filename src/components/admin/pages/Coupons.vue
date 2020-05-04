@@ -55,7 +55,7 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-12">
+              <div class="col">
                 <div class="form-group">
                   <label for="title">標題</label>
                   <input type="text" class="form-control" id="title" placeholder="請輸入標題"

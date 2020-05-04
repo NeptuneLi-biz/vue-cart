@@ -1,45 +1,52 @@
 <template>
-  <div>
-    <aside>
-      <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-        <section class="title bg-primary">
-          <a href="#" class="mobile-close" @click="closeAside">關閉</a>
-        </section>
-        <ul class="navbar-nav">
-          <li class="nav-item"
-              v-for="(item) in sentCategories" :key="item.title"
-              :class="{'dropdown': item.subcategories.length !== 0}">
-            <!-- NOTE: 之後是用 routerLink ,所以現在沒 preventDefault 沒關係-->
-            <a class="nav-link"
-              :class="{'dropdown-toggle': item.subcategories.length !== 0}"
-              :href="'#' + item.title"
-              data-toggle="collapse">
-                {{ item.title }}
-            </a>
-            <div class="list-unstyled collapse"
-                 v-if="item.subcategories.length !== 0"
-                 :id="item.title">
-              <a class="dropdown-item" href="#"
-                  v-for="(subItem, index) in item.subcategories"
-                  :key="index">{{ subItem }}
-              </a>
-            </div>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+  <div class="side">
+    <loading :active.sync="sentProps.isLoading"></loading>
+    <div class="navbar-collapse offcanvas-collapse">
+      <div class="title bg-primary d-flex justify-content-between align-items-center">
+        <div class="ml-3 d-flex align-items-center">
+          <img class=""
+              src="./../../assets/images/logo.png"
+              width="50" height="50">
+          <span class="ml-2 text-white h4 mb-0">Neon Tattoo</span>
+        </div>
+        <button class="btn mobile-close mr-3" @click="closeAside()">
+          <i class="far fa-times-circle fa-2x text-white"></i>
+        </button>
       </div>
-    </aside>
+      <ul class="navbar-nav">
+        <li class="nav-item"
+            v-for="(item) in sentProps.categories" :key="item.title"
+            :class="{'dropdown': item.subcategories.length !== 0}">
+          <router-link class="nav-link h4 p-2"
+                      :class="{'dropdown-toggle': item.subcategories.length !== 0}"
+                      :to="item.link"
+                      :href="'#' + item.title"
+                      @click.native="sentProps.category = item.title;
+                                    closeAside(item.subcategories.length !== 0)"
+                      data-toggle="collapse">
+            {{ item.title }}
+          </router-link>
+          <div class="list-unstyled collapse"
+                v-if="item.subcategories.length !== 0"
+                :id="item.title">
+             <router-link class="dropdown-item h5 px-5"
+                          v-for="(subitem, index) in item.subcategories"
+                          :key="index"
+                          @click.native="sentProps.category = subitem; closeAside();"
+                          :to="`/shop/${subitem}`">
+                {{ subitem }}
+              </router-link>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <style lang="scss">
   $asideBgColor: rgba(53, 64, 52, 1);
   $asideFontColor: white;
-  /*增加 class open 觸發選單*/
-  .open aside {
+  .open .side {
     .offcanvas-collapse {
       transform: translateX(0%);
     }
@@ -55,8 +62,8 @@
     z-index: 10000;
     background-color: $asideBgColor;
     .title {
-      height: 56px;
-      background-color: lightblue;
+      height: 0px;
+      background-color: lightBlue;
       a {
         font-size: 20pt;
         color: white;
@@ -77,15 +84,23 @@
 export default {
   name: 'ShopSidebar',
   props: {
-    sentCategories: {
-      type: Array,
+    sentProps: {
+      type: Object,
     },
   },
   methods: {
-    closeAside() {
-      const vm = this;
-      vm.$emit('close-aside');
+    closeAside(haveSubitem) {
+      if (!haveSubitem) {
+        const vm = this;
+        vm.$emit('close-aside');
+      }
     },
+  },
+  mounted() {
+    // fix nav height
+    const vm = this;
+    vm.sentProps.navHeight = document.querySelector('.navbar').offsetHeight;
+    document.querySelector('.title').setAttribute('style', `height: ${vm.sentProps.navHeight}px;`);
   },
 };
 </script>

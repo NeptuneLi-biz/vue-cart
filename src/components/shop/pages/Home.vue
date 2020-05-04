@@ -1,5 +1,6 @@
 <template>
   <div id="templateHome">
+    <loading :active.sync="sentProps.isLoading"></loading>
     <swiper class="container-fluid p-0 swiper" :options="swiperOption">
       <swiper-slide v-for="i in 2" :key="i">
         <img class="w-100" :src="getBanner(i)">
@@ -8,7 +9,13 @@
       <div class="swiper-button-prev" slot="button-prev"></div>
       <div class="swiper-button-next" slot="button-next"></div>
     </swiper>
-    <div class="container" style="height:1000px; background-color: lightpink;"></div>
+    <div class="container">
+      <router-link v-for="i in 7" :key="i"
+                  :to="`/shop/${link[i-1]}`"
+                  @click.native="sentProps.category = link[i-1]">
+        <img class="w-100" :src="getHomePic(i)">
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -48,6 +55,15 @@ export default {
           subcategories: [],
         },
       ],
+      link: [
+        '',
+        '',
+        '全臂式刺青貼',
+        '滿背刺青貼',
+        '半甲刺青貼',
+        '大圖刺青貼',
+        '小圖刺青貼',
+      ],
       swiperOption: {
         autoplay: {
           disableOnInteraction: false,
@@ -73,6 +89,10 @@ export default {
       // eslint-disable-next-line
       return require(`../../../assets/images/banner/${i}.jpg`);
     },
+    getHomePic(i) {
+      // eslint-disable-next-line
+      return require(`../../../assets/images/home/${i}.jpg`);
+    },
   },
   created() {
     this.sentProps.isHome = true;
@@ -80,8 +100,9 @@ export default {
   },
   mounted() {
     // fix nav height
-    const navHeight = document.querySelector('.navbar').offsetHeight.toString();
-    document.querySelector('#templateHome').setAttribute('style', `margin-top: -${navHeight}px;`);
+    const vm = this;
+    vm.sentProps.navHeight = document.querySelector('.navbar').offsetHeight;
+    document.getElementById('templateHome').setAttribute('style', `margin-top: -${vm.sentProps.navHeight}px;`);
   },
 };
 </script>

@@ -50,8 +50,16 @@
           <div class="modal-body">
             <img :src="product.imageUrl" class="img-fluid" alt="">
             <blockquote class="blockquote mt-3">
-              <p class="mb-0">{{ product.content }}</p>
-              <footer class="blockquote-footer text-right">{{ product.description }}</footer>
+              <p class="mb-0" v-for="(content, index) in product.contentArray"
+                  :key="`content${index}`">
+                {{ content }}
+              </p>
+              <footer class="blockquote-footer text-right">
+                <p v-for="(description, index) in product.descriptionArray"
+                  :key="`description${index}`">
+                  {{ description }}
+                </p>
+              </footer>
             </blockquote>
             <div class="d-flex justify-content-between align-items-baseline">
               <div class="h4" v-if="!product.price">{{ product.origin_price | currency }} 元</div>
@@ -66,7 +74,10 @@
           </div>
           <div class="modal-footer">
             <div class="text-muted text-nowrap mr-3">
-              小計 <strong>{{ product.num * product.price }}</strong> 元
+              小計
+              <strong v-if="!product.price">{{ product.num * product.origin_price }}</strong>
+              <strong v-if="product.price">{{ product.num * product.price }}</strong>
+               元
             </div>
             <button type="button" class="btn btn-primary"
               @click="addToCart(product.id, product.num)">
@@ -227,6 +238,8 @@ export default {
       this.$http.get(url).then((response) => {
         vm.product = response.data.product;
         vm.$set(vm.product, 'num', 1);
+        vm.product.descriptionArray = vm.product.description ? vm.product.description.split(/[\n\r]/g) : [];
+        vm.product.contentArray = vm.product.content ? vm.product.content.split(/[\n\r]/g) : [];
         $('#productModal').modal('show');
         vm.status.loadingItem = '';
       });
@@ -269,8 +282,8 @@ export default {
           vm.getCart();
         } else {
           vm.$bus.$emit('message:push', response.data.message, 'danger');
+          vm.isLoading = false;
         }
-        vm.isLoading = false;
       });
     },
     addCouponCode() {
@@ -299,17 +312,14 @@ export default {
         if (success) {
           this.$http.post(url, { data: order }).then((response) => {
             if (response.data.success) {
-              // vm.$bus.$emit('message:push', response.data.message, 'success');
-              vm.$router.push(`/customer_checkout/${response.data.orderId}`);
+              vm.$bus.$emit('message:push', response.data.message, 'success');
+              vm.$router.push(`/demo/customer_checkout/${response.data.orderId}`);
               vm.getCart();
               order.user.name = '';
               order.user.email = '';
               order.user.tel = '';
               order.user.address = '';
               order.message = '';
-              this.$nextTick(() => {
-                this.$refs.form.reset();
-              });
             } else {
               vm.$bus.$emit('message:push', response.data.message, 'danger');
             }
