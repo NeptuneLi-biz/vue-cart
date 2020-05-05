@@ -49,13 +49,14 @@
         <div class="dropdown d-inline-block"
               @mouseover="showMenu(true, 'cartMenu')"
               @mouseleave="showMenu(false, 'cartMenu')">
-          <div class="btn btn-sm dropdown">
+          <router-link class="btn btn-sm dropdown"
+                      to="/shop_cart">
             <i class="fa fa-shopping-cart text-white"></i>
             <span class="badge badge-pill badge-danger"
                   v-if="sentProps.cartData.carts">
               {{ sentProps.cartData.carts.length }}
             </span>
-          </div>
+          </router-link>
           <div class="dropdown-menu text-center dropdown-menu-right py-0 cart-menu" id="cartMenu">
             <div class="sticky-top px-3 py-2 bg-light">
               <span class="h6 d-block">購物清單</span>
@@ -289,9 +290,9 @@ export default {
       const dropdownMenu = document.getElementById(id);
       if (dropdownMenu === null) { return; }
       if (isOpen) {
-        dropdownMenu.setAttribute('style', 'display: block;');
+        dropdownMenu.classList.add('d-md-block');
       } else {
-        dropdownMenu.setAttribute('style', 'display: none;');
+        dropdownMenu.classList.remove('d-md-block');
       }
     },
     getProducts() {
