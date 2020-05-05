@@ -13,7 +13,7 @@
       <router-link v-for="i in 7" :key="i"
                   :to="`/shop/${link[i-1]}`"
                   @click.native="sentProps.category = link[i-1]">
-        <img class="w-100" :src="getHomePic(i)">
+        <img class="w-100 mt-3" :src="getHomePic(i)">
       </router-link>
     </div>
   </div>
