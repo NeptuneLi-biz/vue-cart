@@ -18,7 +18,9 @@
         <ul class="navbar-nav">
           <li class="nav-item"
               v-for="(item) in sentProps.categories" :key="item.title"
-              :class="{'dropdown': item.subcategories.length !== 0}">
+              :class="{'dropdown': item.subcategories.length !== 0}"
+              @mouseover="showMenu(true, 'menu' + item.title)"
+              @mouseleave="showMenu(false, 'menu' + item.title)">
             <router-link class="nav-link"
                         :class="{'dropdown-toggle': item.subcategories.length !== 0}"
                         :to="item.link"
@@ -26,11 +28,13 @@
               {{ item.title }}
             </router-link>
             <div class="dropdown-menu"
-                v-if="item.subcategories.length !== 0">
+                v-if="item.subcategories.length !== 0"
+                :id="`menu${item.title}`">
               <router-link class="dropdown-item"
                           v-for="(subitem, index) in item.subcategories"
                           :key="index"
-                          @click.native="sentProps.category = subitem;"
+                          @click.native="sentProps.category = subitem;
+                                        showMenu(false,  'menu' + item.title);"
                           :to="`/shop/${subitem}`">
                 {{ subitem }}
               </router-link>
@@ -42,20 +46,30 @@
         <router-link class="btn btn-sm" to="/login">
           <i class="fas fa-cog text-white"></i>
         </router-link>
-        <div class="dropdown d-inline-block">
-          <router-link class="btn btn-sm dropdown" to="/shop_cart">
-            <i class="fa fa-shopping-cart text-white" aria-hidden="true"></i>
+        <div class="dropdown d-inline-block"
+              @mouseover="showMenu(true, 'cartMenu')"
+              @mouseleave="showMenu(false, 'cartMenu')">
+          <div class="btn btn-sm dropdown">
+            <i class="fa fa-shopping-cart text-white"></i>
             <span class="badge badge-pill badge-danger"
                   v-if="sentProps.cartData.carts">
               {{ sentProps.cartData.carts.length }}
             </span>
-          </router-link>
-          <div class="dropdown-menu text-center dropdown-menu-right py-0 cart-menu">
+          </div>
+          <div class="dropdown-menu text-center dropdown-menu-right py-0 cart-menu" id="cartMenu">
             <div class="sticky-top px-3 py-2 bg-light">
               <span class="h6 d-block">購物清單</span>
               <div class="d-flex justify-content-between">
-                <router-link class="btn btn-primary btn-sm" to="/shop_cart">購物車</router-link>
-                <router-link class="btn btn-primary btn-sm" to="/order_confirm">結帳</router-link>
+                <router-link class="btn btn-primary btn-sm"
+                            to="/shop_cart"
+                            @click.native="showMenu(false, 'cartMenu')">
+                  購物車
+                </router-link>
+                <router-link class="btn btn-primary btn-sm"
+                            to="/order_confirm"
+                            @click.native="showMenu(false, 'cartMenu')">
+                  結帳
+                </router-link>
               </div>
             </div>
             <table class="table mb-2">
@@ -130,14 +144,13 @@
 </template>
 
 <style scoped lang="scss">
+  .dropdown-menu {
+    margin-top: -5px;
+  }
   .navbar {
     transition: background-color 1s ease 0s;
     transform: translateZ(0);
     z-index: 1030;
-    .dropdown:hover .dropdown-menu {
-      display: block;
-      top: 90%;
-    }
     .cart-menu {
       width: 400px;
       height: 500px;
@@ -270,6 +283,14 @@ export default {
         document.querySelectorAll('.list-unstyled.collapse').forEach((item) => {
           item.classList.remove('show');
         });
+      }
+    },
+    showMenu(isOpen, id) {
+      const dropdownMenu = document.getElementById(id);
+      if (isOpen) {
+        dropdownMenu.setAttribute('style', 'display: block;');
+      } else {
+        dropdownMenu.setAttribute('style', 'display: none;');
       }
     },
     getProducts() {
