@@ -287,6 +287,7 @@ export default {
     },
     showMenu(isOpen, id) {
       const dropdownMenu = document.getElementById(id);
+      if (dropdownMenu === null) { return; }
       if (isOpen) {
         dropdownMenu.setAttribute('style', 'display: block;');
       } else {
