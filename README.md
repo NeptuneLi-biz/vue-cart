@@ -33,7 +33,7 @@
 * jQuery
 * ES6
 * Webpack
-* ESlint(aribnb)
+* ESLint(aribnb)
 
 ## VuePlugin or OtherPlugin
 
